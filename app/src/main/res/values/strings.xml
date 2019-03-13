@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NetworkAsyncTask</string>
+    <string name="make_request">Make Request</string>
+</resources>
