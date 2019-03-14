@@ -24,7 +24,7 @@ public class HttpRequestAsync extends AsyncTask<String, Void, List<Todo>> {
     interface OnAsyncInteractionListser {
         void onPreExecute();
 
-        void onPostExecute();
+        void onPostExecute(List<Todo> result);
     }
 
     private OnAsyncInteractionListser listener;
@@ -101,6 +101,6 @@ public class HttpRequestAsync extends AsyncTask<String, Void, List<Todo>> {
     @Override
     protected void onPostExecute(List<Todo> result) {
         super.onPostExecute(result);
-        listener.onPostExecute();
+        listener.onPostExecute(result);
     }
 }

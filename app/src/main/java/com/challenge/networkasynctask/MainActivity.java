@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, HttpRequestAsync.OnAsyncInteractionListser {
 
@@ -46,12 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        try {
-            List<Todo> response = new HttpRequestAsync(this).execute(url).get();
-            adapter.setItems(response);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        recyclerView.setVisibility(View.GONE);
+        new HttpRequestAsync(this).execute(url);
     }
 
     @Override
@@ -60,8 +55,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onPostExecute() {
+    public void onPostExecute(List<Todo> result) {
+        adapter.setItems(result);
         progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
+
+    
 
 }
