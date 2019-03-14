@@ -2,13 +2,20 @@ package com.challenge.networkasynctask;
 
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class HttpRequestAsync extends AsyncTask<String, Void, String> {
+public class HttpRequestAsync extends AsyncTask<String, Void, List<Todo>> {
 
     public static final String REQUEST_METHOD = "GET";
     public static final int READ_TIMEOUT = 10000;
@@ -33,10 +40,11 @@ public class HttpRequestAsync extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected List<Todo> doInBackground(String... strings) {
         String remoteUrl = strings[0];
         String result;
         String inputLine;
+        List<Todo> todoList = new ArrayList<>();
 
         try {
             // Create a URL object
@@ -72,16 +80,26 @@ public class HttpRequestAsync extends AsyncTask<String, Void, String> {
             // set the result
             result = stringBuilder.toString();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            result = null;
-        }
+            JSONArray jsonArray = new JSONArray(result);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                Todo todoItem = convertTodo(jsonArray.getJSONObject(i));
+                todoList.add(todoItem);
+            }
 
-        return result;
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+        return todoList;
+    }
+
+    private Todo convertTodo(JSONObject jsonObject) throws JSONException {
+        String title = jsonObject.getString("title");
+        return new Todo(title);
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(List<Todo> result) {
         super.onPostExecute(result);
         listener.onPostExecute();
     }

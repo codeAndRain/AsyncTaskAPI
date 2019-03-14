@@ -2,18 +2,24 @@ package com.challenge.networkasynctask;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, HttpRequestAsync.OnAsyncInteractionListser {
 
     private ProgressBar progressBar;
     private Button requestButton;
-    private TextView responseTextView;
+    private RecyclerView recyclerView;
+
+    private ToDoItemAdapter adapter;
+
 
     public String url = "https://jsonplaceholder.typicode.com/todos/";
 
@@ -28,7 +34,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         progressBar = findViewById(R.id.progress_circular);
         requestButton = findViewById(R.id.request_button);
-        responseTextView = findViewById(R.id.response_text);
+        recyclerView = findViewById(R.id.recycler_view);
+
+        adapter = new ToDoItemAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.setAdapter(adapter);
 
         requestButton.setOnClickListener(this);
     }
@@ -36,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         try {
-            String response = new HttpRequestAsync(this).execute(url).get();
-            responseTextView.setText(response);
+            List<Todo> response = new HttpRequestAsync(this).execute(url).get();
+            adapter.setItems(response);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

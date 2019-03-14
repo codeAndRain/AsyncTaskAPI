@@ -19,17 +19,11 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-
-    <ScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_below="@id/request_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/request_button">
-
-        <TextView
-            android:id="@+id/response_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </ScrollView>
+        tools:listitem="@layout/recycler_view_item" />
 
 </RelativeLayout>
