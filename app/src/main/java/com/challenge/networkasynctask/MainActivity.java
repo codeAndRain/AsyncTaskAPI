@@ -45,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        recyclerView.setVisibility(View.GONE);
         new HttpRequestAsync(this).execute(url);
     }
 
     @Override
     public void onPreExecute() {
         progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override
