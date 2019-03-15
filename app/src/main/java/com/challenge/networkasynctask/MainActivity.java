@@ -9,23 +9,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.challenge.networkasynctask.data.entity.Todo;
+import com.challenge.networkasynctask.data.repo.Repository;
+
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, HttpRequestAsync.OnAsyncInteractionListser {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnAsyncInteractionListener {
 
     private ProgressBar progressBar;
     private Button requestButton;
     private RecyclerView recyclerView;
 
     private ToDoItemAdapter adapter;
+    private Repository repository;
 
-
-    public String url = "https://jsonplaceholder.typicode.com/todos/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        repository = new Repository(this, this);
 
         initViews();
     }
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        new HttpRequestAsync(this).execute(url);
+        repository.getTodoList();
     }
 
     @Override
@@ -55,12 +58,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onPostExecute(List<Todo> result) {
-        adapter.setItems(result);
+    public void onPostExecute(List<Todo> results) {
+        adapter.setItems(results);
+        repository.insert(results);
         progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    
+    @Override
+    public void onPostExecuteDB(List<Todo> results) {
+        adapter.setItems(results);
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        repository.destroyDatabaseInstance();
+    }
 }

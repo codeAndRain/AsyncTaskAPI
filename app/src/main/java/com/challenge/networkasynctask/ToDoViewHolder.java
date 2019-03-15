@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.challenge.networkasynctask.data.entity.Todo;
+
 class ToDoViewHolder extends RecyclerView.ViewHolder {
 
     TextView todoText;
@@ -15,6 +17,6 @@ class ToDoViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Todo todo) {
-        todoText.setText(todo.getToDoItem());
+        todoText.setText(todo.getTitle());
     }
 }

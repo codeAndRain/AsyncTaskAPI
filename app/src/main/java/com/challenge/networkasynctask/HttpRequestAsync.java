@@ -2,6 +2,8 @@ package com.challenge.networkasynctask;
 
 import android.os.AsyncTask;
 
+import com.challenge.networkasynctask.data.entity.Todo;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,15 +23,10 @@ public class HttpRequestAsync extends AsyncTask<String, Void, List<Todo>> {
     public static final int READ_TIMEOUT = 10000;
     public static final int CONNECTION_TIMEOUT = 10000;
 
-    interface OnAsyncInteractionListser {
-        void onPreExecute();
 
-        void onPostExecute(List<Todo> result);
-    }
+    private OnAsyncInteractionListener listener;
 
-    private OnAsyncInteractionListser listener;
-
-    public HttpRequestAsync(OnAsyncInteractionListser listener) {
+    public HttpRequestAsync(OnAsyncInteractionListener listener) {
         this.listener = listener;
     }
 
@@ -95,7 +92,16 @@ public class HttpRequestAsync extends AsyncTask<String, Void, List<Todo>> {
 
     private Todo convertTodo(JSONObject jsonObject) throws JSONException {
         String title = jsonObject.getString("title");
-        return new Todo(title);
+        int id = jsonObject.getInt("id");
+        int todoId = jsonObject.getInt("userId");
+        boolean completed = jsonObject.getBoolean("completed");
+        Todo todo =  new Todo();
+        todo.setId(id);
+        todo.setToDoId(todoId);
+        todo.setTitle(title);
+        todo.setCompleted(completed);
+
+        return todo;
     }
 
     @Override
